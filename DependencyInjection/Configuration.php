@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('backups_dir')->defaultValue('%kernel.root_dir%/../var/db_dumps')->end()
+                ->scalarNode('backups_dir')->defaultValue('%kernel.root_dir%/../var/db_dumps/')->end()
                 ->scalarNode('timeout')->defaultValue(300)->end()
             ->end();
 
