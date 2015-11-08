@@ -1,0 +1,16 @@
+{
+    "name": "smart-core/db-dumper-bundle",
+    "description": "Smart and simple database dumper for Symfony2",
+    "type": "symfony-bundle",
+    "homepage": "http://smart-core.org",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.1",
+        "dizda/cloud-backup-bundle": "~3.0"
+    },                
+    "autoload": {
+        "psr-4": {
+            "SmartCore\\Bundle\\DbDumperBundle\\": ""
+        }
+    }
+}
