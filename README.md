@@ -1,4 +1,4 @@
-FelibBundle
-===========
+DbDumperBundle
+==============
 
-Font-End Library Managment Bundle
+Smart and simple database dumper for Symfony2
