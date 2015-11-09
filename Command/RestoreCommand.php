@@ -32,42 +32,51 @@ class RestoreCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $db = $this->getContainer()->get('smart_db_dumper.manader');
+        $dialog = $this->getHelper('dialog');
 
         $dumpFile = $db->getDefaultDumpFilePath();
 
-        $finder = new Finder();
-        $files = $finder->ignoreDotFiles(true)->in($db->getBackupsDir().$db->getPlatform());
+        if (is_dir($db->getBackupsDir().$db->getPlatform())) {
+            $finder = new Finder();
+            $files = $finder->ignoreDotFiles(true)->in($db->getBackupsDir().$db->getPlatform());
 
-        if ($files->count()) {
-            $output->writeln('<info>Select backup file:</info>');
-            $output->writeln('0) <comment>'.$dumpFile.'</comment>');
+            if ($files->count()) {
+                $output->writeln('<info>Select backup file:</info>');
+                $output->writeln('0) <comment>'.$dumpFile.'</comment>');
 
-            $count = 0;
-            $fileNames = [];
-            $fileNames[$count++] = $dumpFile;
-            /** @var \Symfony\Component\Finder\SplFileInfo $file */
-            foreach ($files as $file) {
-                $output->writeln($count.') <comment>'.$file->getRelativePathname().'</comment>');
-                $fileNames[$count++] = $file->getRelativePathname();
-            }
+                $count = 0;
+                $fileNames = [];
+                $fileNames[$count++] = $dumpFile;
+                /** @var \Symfony\Component\Finder\SplFileInfo $file */
+                foreach ($files as $file) {
+                    $output->writeln($count.') <comment>'.$file->getRelativePathname().'</comment>');
+                    $fileNames[$count++] = $file->getRelativePathname();
+                }
 
-            $dialog = $this->getHelper('dialog');
+                $fileId = $dialog->ask($output, 'Please enter the number of dump file [0]: ', '0');
 
-            $fileId = $dialog->ask($output, 'Please enter the number of dump file [0]: ', '0');
+                if (!isset($fileNames[$fileId])) {
+                    $output->writeln('<error>Error:</error> File number <comment>'.$fileId.'</comment> does\'t exists.');
 
-            if (!isset($fileNames[$fileId])) {
-                $output->writeln('<error>Error:</error> File number <comment>'.$fileId.'</comment> does\'t exists.');
+                    return false;
+                }
 
-                return false;
-            }
-
-            if ($fileId) {
-                $dumpFile = $db->getBackupsDir().$db->getPlatform().'/'.$fileNames[$fileId];
+                if ($fileId) {
+                    $dumpFile = $db->getBackupsDir().$db->getPlatform().'/'.$fileNames[$fileId];
+                }
             }
         }
 
         if (!file_exists($dumpFile)) {
             $output->writeln('<error>Error:</error> File <comment>'.$dumpFile.'</comment> does\'t exists.');
+
+            return false;
+        }
+
+        $confirm = $dialog->ask($output, '<question>Warning:</question> This action is drop all your database and import from file <comment>'.$dumpFile.'</comment> [y,N]: ', 'n');
+
+        if (strtolower($confirm) !== 'y') {
+            $output->writeln('<info>Abort.</info>');
 
             return false;
         }
