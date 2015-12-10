@@ -22,13 +22,12 @@ class MySQL extends BaseDatabase
     private $ignoreTables = '';
 
     /**
-     * DB Auth.
-     *
      * @param array  $params
      * @param string $basePath
      * @param string $fileNamePrefix
+     * @param string $filename
      */
-    public function __construct($params, $basePath, $fileNamePrefix = '')
+    public function __construct($params, $basePath, $fileNamePrefix = '', $filename = null)
     {
         parent::__construct($basePath);
 
@@ -41,7 +40,11 @@ class MySQL extends BaseDatabase
             $this->database = '--all-databases';
             $this->fileName = $fileNamePrefix.'all-databases.sql';
         } else {
-            $this->fileName = $fileNamePrefix.$this->database.'.sql';
+            if ($filename) {
+                $this->fileName = $fileNamePrefix.$filename.'.sql';
+            } else {
+                $this->fileName = $fileNamePrefix.$this->database.'.sql';
+            }
         }
 
         if (isset($params['ignore_tables'])) {

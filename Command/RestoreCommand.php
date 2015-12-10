@@ -31,7 +31,7 @@ class RestoreCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $db = $this->getContainer()->get('smart_db_dumper.manader');
+        $db = $this->getContainer()->get('smart_db_dumper.manager');
         $dialog = $this->getHelper('dialog');
 
         $dumpFile = $db->getDefaultDumpFilePath();

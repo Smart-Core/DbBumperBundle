@@ -1,7 +1,7 @@
 services:
-    smart_db_dumper.manader:
+    smart_db_dumper.manager:
         class: SmartCore\Bundle\DbDumperBundle\Manager\DatabaseManager
-        arguments: [ @doctrine.orm.entity_manager, %smart_db_dumper.backups_dir%, %smart_db_dumper.timeout% ]
+        arguments: [ @doctrine.orm.entity_manager, %smart_db_dumper.backups_dir%, %smart_db_dumper.timeout%, %smart_db_dumper.filename% ]
         calls:
             - [ setContainer, [ @service_container ] ]
             - [ init ]

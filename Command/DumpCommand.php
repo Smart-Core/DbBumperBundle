@@ -28,15 +28,21 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $db = $this->getContainer()->get('smart_db_dumper.manader');
+        $db = $this->getContainer()->get('smart_db_dumper.manager');
 
         $output->writeln('Dumping to: <comment>'.$db->getPath().'</comment>');
 
         $db->dump();
 
         // @todo сделать копирование основного дампа опциональным.
+        if ($db->getFilename()) {
+            $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$db->getFilename().'.sql';
+        } else {
+            $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').'.sql';
+        }
+
         $fs = new Filesystem();
-        $fs->copy($db->getPath(), $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').'.sql');
+        $fs->copy($db->getPath(), $path);
 
         $output->writeln('<info>Backup complete.</info>');
     }

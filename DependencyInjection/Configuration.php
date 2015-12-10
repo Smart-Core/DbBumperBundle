@@ -28,6 +28,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('backups_dir')->defaultValue('%kernel.root_dir%/../var/db_dumps/')->end()
                 ->scalarNode('timeout')->defaultValue(300)->end()
+                ->scalarNode('filename')->defaultNull()->end()
             ->end();
 
         return $treeBuilder;

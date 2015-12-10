@@ -27,5 +27,6 @@ class SmartDbDumperExtension extends Extension
 
         $container->setParameter('smart_db_dumper.backups_dir', $config['backups_dir']);
         $container->setParameter('smart_db_dumper.timeout', $config['timeout']);
+        $container->setParameter('smart_db_dumper.filename', $config['filename']);
     }
 }

@@ -10,9 +10,7 @@ class DatabaseManager
 {
     use ContainerAwareTrait;
 
-    /**
-     * @var \SmartCore\Bundle\DbDumperBundle\Database\MySQL
-     */
+    /** @var \SmartCore\Bundle\DbDumperBundle\Database\MySQL */
     protected $db = null;
 
     /** @var string */
@@ -27,16 +25,21 @@ class DatabaseManager
     /** @var int */
     protected $timeout;
 
+    /** @var string */
+    protected $filename;
+
     /**
      * @param EntityManager $em
      * @param string $backups_dir
      * @param int $timeout
+     * @param string|null $filename
      */
-    public function __construct(EntityManager $em, $backups_dir, $timeout)
+    public function __construct(EntityManager $em, $backups_dir, $timeout, $filename = null)
     {
-        $this->em = $em;
-        $this->backups_dir = $backups_dir;
-        $this->timeout = $timeout;
+        $this->em           = $em;
+        $this->backups_dir  = $backups_dir;
+        $this->filename     = $filename;
+        $this->timeout      = $timeout;
     }
 
     public function init()
@@ -60,7 +63,7 @@ class DatabaseManager
         switch ($this->platform) {
             case 'mysql':
                 $params['mysql'] = $paramsCommon;
-                $this->db = new MySQL($params, $this->backups_dir, date('Y-m-d_H-i-s_'));
+                $this->db = new MySQL($params, $this->backups_dir, date('Y-m-d_H-i-s_'), $this->filename);
                 break;
             default:
                 throw new \Exception('Unknown database platform: '.$this->platform);
@@ -119,6 +122,20 @@ class DatabaseManager
      */
     public function getDefaultDumpFilePath()
     {
-        return $this->container->getParameter('kernel.root_dir').'/../'.$this->container->getParameter('database_name').'.sql';
+        if ($this->filename) {
+            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->filename.'.sql';
+        } else {
+            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->getParameter('database_name').'.sql';
+        }
+
+        return $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
     }
 }
