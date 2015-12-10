@@ -31,14 +31,14 @@ class RestoreCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $db = $this->getContainer()->get('smart_db_dumper.manager');
-        $dialog = $this->getHelper('dialog');
+        $dbdumper = $this->getContainer()->get('smart_db_dumper.manager');
+        $dialog   = $this->getHelper('dialog');
 
-        $dumpFile = $db->getDefaultDumpFilePath();
+        $dumpFile = $dbdumper->getDefaultDumpFilePath();
 
-        if (is_dir($db->getBackupsDir().$db->getPlatform())) {
+        if (is_dir($dbdumper->getBackupsDir().$dbdumper->getPlatform())) {
             $finder = new Finder();
-            $files = $finder->ignoreDotFiles(true)->in($db->getBackupsDir().$db->getPlatform());
+            $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
 
             if ($files->count()) {
                 $output->writeln('<info>Select backup file:</info>');
@@ -62,7 +62,7 @@ class RestoreCommand extends ContainerAwareCommand
                 }
 
                 if ($fileId) {
-                    $dumpFile = $db->getBackupsDir().$db->getPlatform().'/'.$fileNames[$fileId];
+                    $dumpFile = $dbdumper->getBackupsDir().$dbdumper->getPlatform().'/'.$fileNames[$fileId];
                 }
             }
         }
@@ -88,7 +88,7 @@ class RestoreCommand extends ContainerAwareCommand
 
         $output->writeln('Importing from: <comment>'.$dumpFile.'</comment>');
 
-        $db->import($dumpFile);
+        $dbdumper->import($dumpFile);
 
         $output->writeln('<info>Restore complete.</info>');
     }
