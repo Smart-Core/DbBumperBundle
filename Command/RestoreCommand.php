@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Process;
 
 class RestoreCommand extends ContainerAwareCommand
@@ -41,15 +42,19 @@ class RestoreCommand extends ContainerAwareCommand
             $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
 
             if ($files->count()) {
+                $size = round((new \SplFileInfo($dumpFile))->getSize() / 1024 / 1024, 2);
+
                 $output->writeln('<info>Select backup file:</info>');
-                $output->writeln('0) <comment>'.$dumpFile.'</comment>');
+                $output->writeln('0) <comment>'.$dumpFile.'</comment> '.$size.'MB');
 
                 $count = 0;
                 $fileNames = [];
                 $fileNames[$count++] = $dumpFile;
                 /** @var \Symfony\Component\Finder\SplFileInfo $file */
                 foreach ($files as $file) {
-                    $output->writeln($count.') <comment>'.$file->getRelativePathname().'</comment>');
+                    $size = round($file->getSize() / 1024 / 1024, 2);
+
+                    $output->writeln($count.') <comment>'.$file->getRelativePathname().'</comment> '.$size.'MB');
                     $fileNames[$count++] = $file->getRelativePathname();
                 }
 
