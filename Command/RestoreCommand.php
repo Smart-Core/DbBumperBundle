@@ -4,10 +4,12 @@ namespace SmartCore\Bundle\DbDumperBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Process;
@@ -33,7 +35,9 @@ class RestoreCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dbdumper = $this->getContainer()->get('smart_db_dumper.manager');
-        $dialog   = $this->getHelper('dialog');
+
+        /** @var QuestionHelper $dialog */
+        $dialog   = $this->getHelper('question');
 
         $dumpFile = $dbdumper->getDefaultDumpFilePath();
 
@@ -58,7 +62,7 @@ class RestoreCommand extends ContainerAwareCommand
                     $fileNames[$count++] = $file->getRelativePathname();
                 }
 
-                $fileId = $dialog->ask($output, 'Please enter the number of dump file [0]: ', '0');
+                $fileId = $dialog->ask($input, $output, new Question('Please enter the number of dump file [0]: ', '0'));
 
                 if (!isset($fileNames[$fileId])) {
                     $output->writeln('<error>Error:</error> File number <comment>'.$fileId.'</comment> does\'t exists.');
@@ -78,7 +82,7 @@ class RestoreCommand extends ContainerAwareCommand
             return false;
         }
 
-        $confirm = $dialog->ask($output, '<question>Warning:</question> This action is drop all your database and import from file <comment>'.$dumpFile.'</comment> [y,N]: ', 'n');
+        $confirm = $dialog->ask($input, $output, new Question('<question>Warning:</question> This action is drop all your database and import from file <comment>'.$dumpFile.'</comment> [y,N]: ', 'n'));
 
         if (strtolower($confirm) !== 'y') {
             $output->writeln('<info>Abort.</info>');
