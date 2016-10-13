@@ -116,7 +116,7 @@ class RestoreCommand extends ContainerAwareCommand
 
     protected function executeShellCommand($cmd, OutputInterface $output = null)
     {
-        $process = new Process($cmd);
+        $process = new Process($cmd, null, null, null, 600);
         $process->run(function ($type, $buffer) use ($output) {
             $output->write($buffer, false);
         });
