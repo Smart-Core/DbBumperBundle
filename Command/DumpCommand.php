@@ -30,7 +30,10 @@ class DumpCommand extends ContainerAwareCommand
     {
         $db = $this->getContainer()->get('smart_db_dumper.manager');
 
-        $output->writeln('Dumping to: <comment>'.realpath($db->getPath()).'</comment>');
+        $pathinfo = pathinfo($db->getPath());
+        $path = realpath($pathinfo['dirname']).'/'.$pathinfo['basename'];
+
+        $output->writeln('Dumping to: <comment>'.$path.'</comment>');
 
         $db->dump();
 
