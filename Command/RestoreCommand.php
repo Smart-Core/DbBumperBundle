@@ -49,7 +49,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $size = round((new \SplFileInfo($dumpFile))->getSize() / 1024 / 1024, 2);
 
                 $output->writeln('<info>Select backup file:</info>');
-                $output->writeln('0) <comment>'.$dumpFile.'</comment> '.$size.'MB');
+                $output->writeln('0) <comment>'.realpath($dumpFile).'</comment> '.$size.'MB');
 
                 $count = 0;
                 $fileNames = [];
@@ -82,7 +82,7 @@ class RestoreCommand extends ContainerAwareCommand
             return false;
         }
 
-        $confirm = $dialog->ask($input, $output, new Question('<question>Warning:</question> This action is drop all your database and import from file <comment>'.$dumpFile.'</comment> [y,N]: ', 'n'));
+        $confirm = $dialog->ask($input, $output, new Question('<question>Warning:</question> This action is drop all your database and import from file <comment>'.realpath($dumpFile).'</comment> [y,N]: ', 'n'));
 
         if (strtolower($confirm) !== 'y') {
             $output->writeln('<info>Abort.</info>');
