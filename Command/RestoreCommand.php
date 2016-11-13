@@ -92,8 +92,8 @@ class RestoreCommand extends ContainerAwareCommand
 
 //        $this->executeCommand('doctrine:schema:update', ['--force' => true, '--complete' => true]);
 //        $this->executeCommand('doctrine:schema:drop', ['--force' => true]);
-        $this->executeShellCommand('php app/console doctrine:schema:update --force --complete', $output);
-        $this->executeShellCommand('php app/console doctrine:schema:drop --force', $output);
+        $this->executeShellCommand('php bin/console doctrine:schema:update --force --complete', $output);
+        $this->executeShellCommand('php bin/console doctrine:schema:drop --force', $output);
 
         $output->writeln('Importing from: <comment>'.$dumpFile.'</comment>');
 
