@@ -28,6 +28,8 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $start_time = microtime(true);
+
         $db = $this->getContainer()->get('smart_db_dumper.manager');
 
         $pathinfo = pathinfo($db->getPath());
@@ -47,6 +49,8 @@ class DumpCommand extends ContainerAwareCommand
         $fs = new Filesystem();
         $fs->copy($db->getPath(), $path);
 
-        $output->writeln('<info>Backup complete.</info>');
+        $time = round(microtime(true) - $start_time, 2);
+
+        $output->writeln("<info>Backup complete in $time sec.</info>");
     }
 }

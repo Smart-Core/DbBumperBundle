@@ -90,6 +90,8 @@ class RestoreCommand extends ContainerAwareCommand
             return false;
         }
 
+        $start_time = microtime(true);
+
 //        $this->executeCommand('doctrine:schema:update', ['--force' => true, '--complete' => true]);
 //        $this->executeCommand('doctrine:schema:drop', ['--force' => true]);
         $this->executeShellCommand('php bin/console doctrine:schema:update --force --complete', $output);
@@ -99,7 +101,9 @@ class RestoreCommand extends ContainerAwareCommand
 
         $dbdumper->import($dumpFile);
 
-        $output->writeln('<info>Restore complete.</info>');
+        $time = round(microtime(true) - $start_time, 2);
+
+        $output->writeln("<info>Restore complete in $time sec.</info>");
     }
 
     protected function executeCommand($cmd, array $args = [])
