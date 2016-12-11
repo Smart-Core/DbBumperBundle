@@ -6,7 +6,8 @@
     "license": "MIT",
     "require": {
         "php": ">=5.4.1",
-        "dizda/cloud-backup-bundle": "*"
+        "dizda/cloud-backup-bundle": "*",
+        "knplabs/knp-gaufrette-bundle": "*"
     },                
     "autoload": {
         "psr-4": {
