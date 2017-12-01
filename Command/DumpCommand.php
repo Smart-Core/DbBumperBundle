@@ -17,6 +17,7 @@ class DumpCommand extends ContainerAwareCommand
     {
         $this
             ->setName('smart:dbdumper:dump')
+            ->setAliases(['db:dump'])
             ->setDescription('Dump backup of your database.');
     }
 
