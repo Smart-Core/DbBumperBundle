@@ -23,6 +23,7 @@ class RestoreCommand extends ContainerAwareCommand
     {
         $this
             ->setName('smart:dbdumper:restore')
+            ->setAliases(['db:restore'])
             ->setDescription('Restore default backup.');
     }
 
