@@ -29,6 +29,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('backups_dir')->defaultValue('%kernel.root_dir%/../var/db_dumps/')->end()
                 ->scalarNode('timeout')->defaultValue(300)->end()
                 ->scalarNode('filename')->defaultNull()->end()
+                ->enumNode('archive')->values(['none', 'gz', 'tar', 'zip', '7z'])->defaultValue('gz')->end()
+                ->integerNode('compression_ratio')->defaultValue(6)->min(0)->max(100)->end()
             ->end();
 
         return $treeBuilder;

@@ -47,11 +47,37 @@ class DumpCommand extends ContainerAwareCommand
             $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').'.sql';
         }
 
-        $fs = new Filesystem();
-        $fs->copy($db->getPath(), $path);
+        if ($this->getContainer()->getParameter('smart_db_dumper.archive') == 'gz') {
+            $gzfile = $this->gzip($db->getPath());
+
+            $fs = new Filesystem();
+            $fs->copy($gzfile, $path.'.gz');
+
+            unlink($db->getPath());
+        } else {
+            $fs = new Filesystem();
+            $fs->copy($db->getPath(), $path);
+        }
 
         $time = round(microtime(true) - $start_time, 2);
 
         $output->writeln("<info>Backup complete in $time sec.</info>");
+    }
+
+    protected function gzip($filename)
+    {
+        // Name of the gz file we're creating
+        $gzfile = $filename.".gz";
+
+        // Open the gz file (w9 is the highest compression)
+        $fp = gzopen($gzfile, 'w9');
+
+        // Compress the file
+        gzwrite($fp, file_get_contents($filename));
+
+        // Close the gz file and we're done
+        gzclose($fp);
+
+        return $gzfile;
     }
 }
