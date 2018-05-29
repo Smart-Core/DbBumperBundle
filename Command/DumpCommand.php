@@ -5,6 +5,7 @@ namespace SmartCore\Bundle\DbDumperBundle\Command;
 use SmartCore\Bundle\DbDumperBundle\Database\MySQL;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -18,6 +19,7 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->setName('smart:dbdumper:dump')
             ->setAliases(['db:dump'])
+            ->addOption('archive', 'a', InputOption::VALUE_OPTIONAL, 'Use archive compression')
             ->setDescription('Dump backup of your database.');
     }
 
@@ -47,7 +49,13 @@ class DumpCommand extends ContainerAwareCommand
             $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').'.sql';
         }
 
-        if ($this->getContainer()->getParameter('smart_db_dumper.archive') == 'gz') {
+        $archive = $this->getContainer()->getParameter('smart_db_dumper.archive');
+
+        if (!empty($input->getOption('archive'))) {
+            $archive = str_replace('=', '', $input->getOption('archive'));
+        }
+        
+        if ($archive == 'gz') {
             $gzfile = $this->gzip($db->getPath());
 
             $fs = new Filesystem();
