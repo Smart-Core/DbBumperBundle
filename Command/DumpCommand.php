@@ -35,57 +35,30 @@ class DumpCommand extends ContainerAwareCommand
 
         $db = $this->getContainer()->get('smart_db_dumper.manager');
 
+        if (!empty($input->getOption('archive'))) {
+            $db->setArchive(str_replace('=', '', $input->getOption('archive')));
+        }
+
         $pathinfo = pathinfo($db->getPath());
         $path = realpath($pathinfo['dirname']).'/'.$pathinfo['basename'];
 
         $output->writeln('Dumping to: <comment>'.$path.'</comment>');
 
-        $db->dump();
+        $dumpFilePath = $db->dump();
 
-        // @todo сделать копирование основного дампа опциональным.
-        if ($db->getFilename()) {
-            $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$db->getFilename().'.sql';
-        } else {
-            $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').'.sql';
-        }
-
-        $archive = $this->getContainer()->getParameter('smart_db_dumper.archive');
-
-        if (!empty($input->getOption('archive'))) {
-            $archive = str_replace('=', '', $input->getOption('archive'));
-        }
-        
-        if ($archive == 'gz') {
-            $gzfile = $this->gzip($db->getPath());
+        if ($this->getContainer()->getParameter('smart_db_dumper.make_copy_to_project_root')) {
+            if ($db->getFilename()) {
+                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$db->getFilename(true);
+            } else {
+                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').$db->getFilenameExtension();
+            }
 
             $fs = new Filesystem();
-            $fs->copy($gzfile, $path.'.gz');
-
-            unlink($db->getPath());
-        } else {
-            $fs = new Filesystem();
-            $fs->copy($db->getPath(), $path);
+            $fs->copy($dumpFilePath, $path);
         }
 
         $time = round(microtime(true) - $start_time, 2);
 
         $output->writeln("<info>Backup complete in $time sec.</info>");
-    }
-
-    protected function gzip($filename)
-    {
-        // Name of the gz file we're creating
-        $gzfile = $filename.".gz";
-
-        // Open the gz file (w9 is the highest compression)
-        $fp = gzopen($gzfile, 'w9');
-
-        // Compress the file
-        gzwrite($fp, file_get_contents($filename));
-
-        // Close the gz file and we're done
-        gzclose($fp);
-
-        return $gzfile;
     }
 }

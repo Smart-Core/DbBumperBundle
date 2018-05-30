@@ -30,5 +30,7 @@ class SmartDbDumperExtension extends Extension
         $container->setParameter('smart_db_dumper.filename', $config['filename']);
         $container->setParameter('smart_db_dumper.archive', $config['archive']);
         $container->setParameter('smart_db_dumper.compression_ratio', $config['compression_ratio']);
+        $container->setParameter('smart_db_dumper.make_copy_to_project_root', $config['make_copy_to_project_root']);
+        $container->setParameter('smart_db_dumper.make_dump_before_restore', $config['make_dump_before_restore']);
     }
 }

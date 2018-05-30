@@ -14,6 +14,9 @@ class DatabaseManager
     protected $db = null;
 
     /** @var string */
+    protected $archive;
+
+    /** @var string */
     protected $backups_dir;
 
     /** @var \Doctrine\ORM\EntityManager */
@@ -37,6 +40,7 @@ class DatabaseManager
     public function __construct(EntityManager $em, $backups_dir, $timeout, $filename = null)
     {
         $this->em           = $em;
+        $this->archive      = null;
         $this->backups_dir  = $backups_dir;
         $this->filename     = $filename;
         $this->timeout      = $timeout;
@@ -46,6 +50,12 @@ class DatabaseManager
     {
         if ($this->db) {
             return;
+        }
+
+        $archive = $this->container->getParameter('smart_db_dumper.archive');
+
+        if ($archive !== 'none') {
+            $this->archive = $archive;
         }
 
         $this->platform = $this->em->getConnection()->getDatabasePlatform()->getName();
@@ -78,11 +88,21 @@ class DatabaseManager
     public function dump()
     {
         $this->db->dump();
+
+        if ($this->archive == 'gz') {
+            $file = $this->gzip($this->db->getPath());
+
+            unlink($this->db->getPath());
+
+            return $file;
+        }
+
+        return $this->db->getPath();
     }
 
     public function getPath()
     {
-        return $this->db->getPath();
+        return $this->archive ? $this->db->getPath().'.'.$this->archive : $this->db->getPath();
     }
 
     /**
@@ -132,10 +152,69 @@ class DatabaseManager
     }
 
     /**
+     * @param bool $ext
+     *
+     * @return null|string
+     */
+    public function getFilename($ext = false)
+    {
+        $filename = $this->filename;
+
+        if ($ext) {
+            $filename .= $this->getFilenameExtension();
+        }
+
+        return $filename;
+    }
+
+    /**
      * @return string
      */
-    public function getFilename()
+    public function getFilenameExtension()
     {
-        return $this->filename;
+        $ext = '.sql';
+
+        if ($this->archive) {
+            $ext .= '.'.$this->archive;
+        }
+
+        return $ext;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArchive()
+    {
+        return $this->archive;
+    }
+
+    /**
+     * @param string $archive
+     *
+     * @return $this
+     */
+    public function setArchive($archive)
+    {
+        $this->archive = $archive;
+
+        return $this;
+    }
+
+    protected function gzip($filename)
+    {
+        // Name of the gz file we're creating
+        $gzfile = $filename.".gz";
+
+        // Open the gz file (w9 is the highest compression)
+        $fp = gzopen($gzfile, 'w9');
+
+        // Compress the file
+        gzwrite($fp, file_get_contents($filename));
+
+        // Close the gz file and we're done
+        gzclose($fp);
+
+        return $gzfile;
     }
 }
