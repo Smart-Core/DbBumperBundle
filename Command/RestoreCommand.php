@@ -42,6 +42,8 @@ class RestoreCommand extends ContainerAwareCommand
 
         $dumpFile = $dbdumper->getDefaultDumpFilePath();
 
+        dump($dumpFile);
+
         if (is_dir($dbdumper->getBackupsDir().$dbdumper->getPlatform())) {
             $finder = new Finder();
             $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
@@ -92,6 +94,15 @@ class RestoreCommand extends ContainerAwareCommand
         }
 
         $start_time = microtime(true);
+
+        if ($this->getContainer()->getParameter('smart_db_dumper.make_dump_before_restore')) {
+            $pathinfo = pathinfo($dbdumper->getPath());
+            $path = realpath($pathinfo['dirname']).'/'.$pathinfo['basename'];
+
+            $output->writeln('Dumping to: <comment>'.$path.'</comment>');
+
+            $dbdumper->dump('autobackup_'.date('Y-m-d_H-i-s_').$dbdumper->getFilename().'.sql');
+        }
 
 //        $this->executeCommand('doctrine:schema:update', ['--force' => true, '--complete' => true]);
 //        $this->executeCommand('doctrine:schema:drop', ['--force' => true]);

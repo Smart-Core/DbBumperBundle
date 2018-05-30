@@ -53,7 +53,6 @@ class DatabaseManager
         }
 
         $archive = $this->container->getParameter('smart_db_dumper.archive');
-
         if ($archive !== 'none') {
             $this->archive = $archive;
         }
@@ -85,8 +84,14 @@ class DatabaseManager
         return $this->db->import($path);
     }
 
-    public function dump()
+    public function dump($filename = null)
     {
+        $currentDbFilename = $this->db->getFileName();
+
+        if ($filename) {
+            $this->db->setFileName($filename);
+        }
+
         $this->db->dump();
 
         if ($this->archive == 'gz') {
@@ -94,8 +99,12 @@ class DatabaseManager
 
             unlink($this->db->getPath());
 
+            $this->db->setFileName($currentDbFilename);
+
             return $file;
         }
+
+        $this->db->setFileName($currentDbFilename);
 
         return $this->db->getPath();
     }
@@ -143,9 +152,9 @@ class DatabaseManager
     public function getDefaultDumpFilePath()
     {
         if ($this->filename) {
-            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->filename.'.sql';
+            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->getFilename(true);
         } else {
-            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->getParameter('database_name').'.sql';
+            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->getParameter('database_name').$this->getFilenameExtension();
         }
 
         return $path;

@@ -90,7 +90,7 @@ class MySQL extends BaseDatabase
             $this->auth,
             $this->database,
             $this->ignoreTables,
-            $this->dataPath.$this->fileName
+            $this->dataPath.$this->getFileName()
         );
     }
 
@@ -112,7 +112,7 @@ class MySQL extends BaseDatabase
 
     public function getPath()
     {
-        return $this->dataPath.$this->fileName;
+        return $this->dataPath.$this->getFileName();
     }
 
     protected function getImportCommand($path = null)
@@ -120,7 +120,27 @@ class MySQL extends BaseDatabase
         return sprintf('mysql %s %s < %s',
             $this->auth,
             $this->database,
-            $path ?: $this->dataPath.$this->fileName
+            $path ?: $this->dataPath.$this->getFileName()
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param string $fileName
+     *
+     * @return $this
+     */
+    public function setFileName($fileName)
+    {
+        $this->fileName = $fileName;
+
+        return $this;
     }
 }
