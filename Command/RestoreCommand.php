@@ -42,17 +42,20 @@ class RestoreCommand extends ContainerAwareCommand
 
         $dumpFile = $dbdumper->getDefaultDumpFilePath();
 
-        dump($dumpFile);
-
         if (is_dir($dbdumper->getBackupsDir().$dbdumper->getPlatform())) {
             $finder = new Finder();
             $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
 
             if ($files->count()) {
-                $size = round((new \SplFileInfo($dumpFile))->getSize() / 1024 / 1024, 2);
-
                 $output->writeln('<info>Select backup file:</info>');
-                $output->writeln('0) <comment>'.realpath($dumpFile).'</comment> '.$size.'MB');
+
+                if (file_exists($dumpFile)) {
+                    $size = round((new \SplFileInfo($dumpFile))->getSize() / 1024 / 1024, 2);
+                    $output->writeln('0) <comment>'.realpath($dumpFile).'</comment> '.$size.'MB');
+                    $default_file_number = 0;
+                } else {
+                    $default_file_number = 1;
+                }
 
                 $count = 0;
                 $fileNames = [];
@@ -65,7 +68,7 @@ class RestoreCommand extends ContainerAwareCommand
                     $fileNames[$count++] = $file->getRelativePathname();
                 }
 
-                $fileId = $dialog->ask($input, $output, new Question('Please enter the number of dump file [0]: ', '0'));
+                $fileId = $dialog->ask($input, $output, new Question("Please enter the number of dump file [$default_file_number]: ", $default_file_number));
 
                 if (!isset($fileNames[$fileId])) {
                     $output->writeln('<error>Error:</error> File number <comment>'.$fileId.'</comment> does\'t exists.');
