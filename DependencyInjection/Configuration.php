@@ -17,8 +17,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('smart_db_dumper');
+        $treeBuilder = new TreeBuilder("smart_db_dumper");
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root("smart_db_dumper");
+        }
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
