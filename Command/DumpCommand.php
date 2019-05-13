@@ -49,7 +49,7 @@ class DumpCommand extends ContainerAwareCommand
             if ($db->getFilename()) {
                 $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$db->getFilename(true);
             } else {
-                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->getParameter('database_name').$db->getFilenameExtension();
+                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
             }
 
             $fs = new Filesystem();

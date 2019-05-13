@@ -59,13 +59,15 @@ class DatabaseManager
 
         $this->platform = $this->em->getConnection()->getDatabasePlatform()->getName();
 
+        $connection = $this->container->get('doctrine.dbal.default_connection');
+
         $paramsCommon = [
             'all_databases' => false,
-            'database' => $this->container->getParameter('database_name'),
-            'db_user' => $this->container->getParameter('database_user'),
-            'db_password' => $this->container->getParameter('database_password'),
-            'db_host' => $this->container->getParameter('database_host'),
-            'db_port' => $this->container->getParameter('database_port') ?: 3306,
+            'database' => $connection->getDatabase(),
+            'db_user' => $connection->getUsername(),
+            'db_password' => $connection->getPassword(),
+            'db_host' => $connection->getHost(),
+            'db_port' => $connection->getPort() ?: 3306,
             'ignore_tables' => [],
         ];
 
@@ -154,7 +156,7 @@ class DatabaseManager
         if ($this->filename) {
             $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->getFilename(true);
         } else {
-            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->getParameter('database_name').$this->getFilenameExtension();
+            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$this->getFilenameExtension();
         }
 
         return $path;
