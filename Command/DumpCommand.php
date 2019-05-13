@@ -2,14 +2,17 @@
 
 namespace SmartCore\Bundle\DbDumperBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
-class DumpCommand extends ContainerAwareCommand
+class DumpCommand extends Command
 {
+    use ContainerAwareTrait;
+
     /**
      * Configure the command.
      */
@@ -32,7 +35,7 @@ class DumpCommand extends ContainerAwareCommand
     {
         $start_time = microtime(true);
 
-        $db = $this->getContainer()->get('smart_db_dumper.manager');
+        $db = $this->container->get('smart_db_dumper.manager');
 
         if (!empty($input->getOption('archive'))) {
             $db->setArchive(str_replace('=', '', $input->getOption('archive')));
@@ -45,11 +48,11 @@ class DumpCommand extends ContainerAwareCommand
 
         $dumpFilePath = $db->dump();
 
-        if ($this->getContainer()->getParameter('smart_db_dumper.make_copy_to_project_root')) {
+        if ($this->container->getParameter('smart_db_dumper.make_copy_to_project_root')) {
             if ($db->getFilename()) {
-                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$db->getFilename(true);
+                $path = $this->container->getParameter('kernel.root_dir').'/../'.$db->getFilename(true);
             } else {
-                $path = $this->getContainer()->getParameter('kernel.root_dir').'/../'.$this->getContainer()->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
+                $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
             }
 
             $fs = new Filesystem();
