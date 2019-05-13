@@ -10,11 +10,9 @@ services:
     smart_db_dumper.dump_command:
         class: SmartCore\Bundle\DbDumperBundle\Command\DumpCommand
         tags:
-            - { name: console.command }
-            - { command: 'smart:dbdumper:dump' }
+            - { name: console.command, command: 'smart:dbdumper:dump' }
 
     smart_db_dumper.restore_command:
         class: SmartCore\Bundle\DbDumperBundle\Command\RestoreCommand
         tags:
-            - { name: console.command }
-            - { command: 'smart:dbdumper:restore' }
+            - { name: console.command, command: 'smart:dbdumper:restore' }
