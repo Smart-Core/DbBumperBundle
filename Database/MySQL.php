@@ -2,8 +2,6 @@
 
 namespace SmartCore\Bundle\DbDumperBundle\Database;
 
-use Dizda\CloudBackupBundle\Database\BaseDatabase;
-
 /**
  * Отличие от оригинального класса Dizda:
  *
@@ -11,7 +9,7 @@ use Dizda\CloudBackupBundle\Database\BaseDatabase;
  *
  * 2) Прекфикс имени файла.
  */
-class MySQL extends BaseDatabase
+class MySQL extends AbstractDatabase
 {
     const DB_PATH = 'mysql';
 
