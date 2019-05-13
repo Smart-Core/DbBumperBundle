@@ -2,7 +2,6 @@
 
 namespace SmartCore\Bundle\DbDumperBundle\Command;
 
-use SmartCore\Bundle\DbDumperBundle\Database\MySQL;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
