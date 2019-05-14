@@ -37,7 +37,7 @@ class RestoreCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dbdumper = $this->getContainer()->get('smart_db_dumper.manager');
+        $dbdumper = $this->container->get('smart_db_dumper.manager');
 
         /** @var QuestionHelper $dialog */
         $dialog   = $this->getHelper('question');
@@ -100,7 +100,7 @@ class RestoreCommand extends Command
 
         $start_time = microtime(true);
 
-        if ($this->getContainer()->getParameter('smart_db_dumper.make_dump_before_restore')) {
+        if ($this->container->getParameter('smart_db_dumper.make_dump_before_restore')) {
             $pathinfo = pathinfo($dbdumper->getPath());
             $path = realpath($pathinfo['dirname']).'/'.$pathinfo['basename'];
 
@@ -154,7 +154,7 @@ class RestoreCommand extends Command
     {
         $args['command'] = $cmd;
 
-        $application = new Application($this->getContainer()->get('kernel'));
+        $application = new Application($this->container->get('kernel'));
         $application->setAutoExit(false);
         $input = new ArrayInput($args);
         $output = new BufferedOutput();
