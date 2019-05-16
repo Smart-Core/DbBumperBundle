@@ -32,7 +32,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('backups_dir')->defaultValue('%kernel.root_dir%/../var/db_dumps/')->end()
+                ->scalarNode('backups_dir')->defaultValue('%kernel.project_dir%/var/db_dumps/')->end()
                 ->scalarNode('timeout')->defaultValue(300)->end()
                 ->scalarNode('filename')->defaultNull()->end()
                 ->booleanNode('make_copy_to_project_root')->defaultFalse()->end()

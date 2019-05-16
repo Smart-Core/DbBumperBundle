@@ -154,9 +154,9 @@ class DatabaseManager
     public function getDefaultDumpFilePath()
     {
         if ($this->filename) {
-            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->getFilename(true);
+            $path = $this->container->getParameter('kernel.project_dir').'/'.$this->getFilename(true);
         } else {
-            $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$this->getFilenameExtension();
+            $path = $this->container->getParameter('kernel.project_dir').'/'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$this->getFilenameExtension();
         }
 
         return $path;

@@ -50,9 +50,9 @@ class DumpCommand extends Command
 
         if ($this->container->getParameter('smart_db_dumper.make_copy_to_project_root')) {
             if ($db->getFilename()) {
-                $path = $this->container->getParameter('kernel.root_dir').'/../'.$db->getFilename(true);
+                $path = $this->container->getParameter('kernel.project_dir').'/'.$db->getFilename(true);
             } else {
-                $path = $this->container->getParameter('kernel.root_dir').'/../'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
+                $path = $this->container->getParameter('kernel.project_dir').'/'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
             }
 
             $fs = new Filesystem();
