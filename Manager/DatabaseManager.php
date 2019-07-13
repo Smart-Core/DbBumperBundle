@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\DbDumperBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use SmartCore\Bundle\DbDumperBundle\Database\MySQL;
+use SmartCore\Bundle\DbDumperBundle\Database\PostgreSQL;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class DatabaseManager
@@ -75,6 +76,10 @@ class DatabaseManager
             case 'mysql':
                 $params['mysql'] = $paramsCommon;
                 $this->db = new MySQL($params, $this->backups_dir, date('Y-m-d_H-i-s_'), $this->filename);
+                break;
+            case 'postgresql':
+                $params['postgresql'] = $paramsCommon;
+                $this->db = new PostgreSQL($params, $this->backups_dir, date('Y-m-d_H-i-s_'), $this->filename);
                 break;
             default:
                 throw new \Exception('Unknown database platform: '.$this->platform);
