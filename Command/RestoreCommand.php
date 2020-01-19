@@ -75,7 +75,7 @@ class RestoreCommand extends Command
                 if (!isset($fileNames[$fileId])) {
                     $output->writeln('<error>Error:</error> File number <comment>'.$fileId.'</comment> does\'t exists.');
 
-                    return false;
+                    return 0;
                 }
 
                 if ($fileId) {
@@ -87,7 +87,7 @@ class RestoreCommand extends Command
         if (!file_exists($dumpFile)) {
             $output->writeln('<error>Error:</error> File <comment>'.$dumpFile.'</comment> does\'t exists.');
 
-            return false;
+            return 0;
         }
 
         $confirm = $dialog->ask($input, $output, new Question('<question>Warning:</question> This action is drop all your database and import from file <comment>'.realpath($dumpFile).'</comment> [y,N]: ', 'n'));
@@ -95,7 +95,7 @@ class RestoreCommand extends Command
         if (strtolower($confirm) !== 'y') {
             $output->writeln('<info>Abort.</info>');
 
-            return false;
+            return 0;
         }
 
         $start_time = microtime(true);
@@ -127,6 +127,8 @@ class RestoreCommand extends Command
         $time = round(microtime(true) - $start_time, 2);
 
         $output->writeln("<info>Restore complete in $time sec.</info>");
+
+        return 0;
     }
 
     protected function ungzip($file_name)

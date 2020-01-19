@@ -62,5 +62,7 @@ class DumpCommand extends Command
         $time = round(microtime(true) - $start_time, 2);
 
         $output->writeln("<info>Backup complete in $time sec.</info>");
+
+        return 0;
     }
 }
