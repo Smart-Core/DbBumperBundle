@@ -67,6 +67,7 @@ class PostgreSQL extends AbstractDatabase
     {
         $this->preparePath();
 
+        /*
         \Spatie\DbDumper\Databases\PostgreSql::create()
             ->setDbName($this->database)
             ->setHost($this->host)
@@ -76,8 +77,8 @@ class PostgreSQL extends AbstractDatabase
             ->excludeTables($this->ignoreTables)
             ->dumpToFile($this->dataPath.$this->getFileName())
         ;
-
-//        $this->execute($this->getCommand());
+        */
+        $this->execute($this->getCommand());
     }
 
     /**
