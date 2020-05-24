@@ -70,7 +70,7 @@ class PostgreSQL extends AbstractDatabase
         \Spatie\DbDumper\Databases\PostgreSql::create()
             ->setDbName($this->database)
             ->setHost($this->host)
-            ->setPort($this->port)
+            ->setPort((int) $this->port)
             ->setUserName($this->user)
             ->setPassword($this->password)
             ->excludeTables($this->ignoreTables)
