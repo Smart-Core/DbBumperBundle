@@ -17,6 +17,11 @@ abstract class AbstractDatabase implements DatabaseInterface
     protected $filesystem;
     protected $timeout;
 
+    protected $host;
+    protected $port;
+    protected $user;
+    protected $password;
+
     /**
      * Get SF2 Filesystem.
      *
@@ -38,7 +43,7 @@ abstract class AbstractDatabase implements DatabaseInterface
      */
     protected function execute($command)
     {
-        $process = new Process($command, null, null, null, $this->timeout);
+        $process = Process::fromShellCommandline($command, null, null, null, $this->timeout);
         $process->run();
 
         if (!$process->isSuccessful()) {

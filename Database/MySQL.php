@@ -34,6 +34,11 @@ class MySQL extends AbstractDatabase
         $this->database     = $params['database'];
         $this->auth         = '';
 
+        $this->host = $params['db_host'];
+        $this->port = $params['db_port'];
+        $this->user = $params['db_user'];
+        $this->password = $params['db_password'];
+
         if ($this->allDatabases) {
             $this->database = '--all-databases';
             $this->fileName = $fileNamePrefix.'all-databases.sql';
@@ -76,11 +81,24 @@ class MySQL extends AbstractDatabase
     public function dump()
     {
         $this->preparePath();
-        $this->execute($this->getCommand());
+
+        $DbDumper = \Spatie\DbDumper\Databases\MySql::create()
+            ->setDbName($this->database)
+            ->setHost($this->host)
+            ->setPort($this->port)
+            ->setUserName($this->user)
+            ->setPassword($this->password)
+            ->excludeTables($this->ignoreTables)
+            ->dumpToFile($this->dataPath.$this->getFileName())
+        ;
+
+//        $this->execute($this->getCommand());
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated
      */
     protected function getCommand()
     {

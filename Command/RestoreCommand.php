@@ -166,7 +166,7 @@ class RestoreCommand extends Command
 
     protected function executeShellCommand($cmd, OutputInterface $output = null)
     {
-        $process = new Process($cmd, null, null, null, 600);
+        $process = Process::fromShellCommandline($cmd, null, null, null, 600);
         $process->run(function ($type, $buffer) use ($output) {
             $output->write($buffer, false);
         });

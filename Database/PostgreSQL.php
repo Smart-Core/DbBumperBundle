@@ -29,6 +29,11 @@ class PostgreSQL extends AbstractDatabase
         $this->database     = $params['database'];
         $this->auth         = '';
 
+        $this->host = $params['db_host'];
+        $this->port = $params['db_port'];
+        $this->user = $params['db_user'];
+        $this->password = $params['db_password'];
+
         if ($filename) {
             $this->fileName = $fileNamePrefix.$filename.'.sql';
         } else {
@@ -61,11 +66,24 @@ class PostgreSQL extends AbstractDatabase
     public function dump()
     {
         $this->preparePath();
-        $this->execute($this->getCommand());
+
+        \Spatie\DbDumper\Databases\PostgreSql::create()
+            ->setDbName($this->database)
+            ->setHost($this->host)
+            ->setPort($this->port)
+            ->setUserName($this->user)
+            ->setPassword($this->password)
+            ->excludeTables($this->ignoreTables)
+            ->dumpToFile($this->dataPath.$this->getFileName())
+        ;
+
+//        $this->execute($this->getCommand());
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated
      */
     protected function getCommand()
     {
