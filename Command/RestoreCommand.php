@@ -109,10 +109,10 @@ class RestoreCommand extends Command
             $dbdumper->dump('autobackup_'.date('Y-m-d_H-i-s_').$dbdumper->getFilename().'.sql');
         }
 
-//        $this->executeCommand('doctrine:schema:update', ['--force' => true, '--complete' => true]);
-//        $this->executeCommand('doctrine:schema:drop', ['--force' => true]);
-        $this->executeShellCommand('php bin/console doctrine:schema:update --force --complete', $output);
-        $this->executeShellCommand('php bin/console doctrine:schema:drop --force', $output);
+        $this->executeCommand('doctrine:schema:update', ['--force' => true, '--complete' => true]);
+        $this->executeCommand('doctrine:schema:drop', ['--force' => true]);
+//        $this->executeShellCommand('php bin/console doctrine:schema:update --force --complete', $output);
+//        $this->executeShellCommand('php bin/console doctrine:schema:drop --force', $output);
 
         $output->writeln('Importing from: <comment>'.$dumpFile.'</comment>');
 
