@@ -49,10 +49,13 @@ class DumpCommand extends Command
         $dumpFilePath = $db->dump();
 
         if ($this->container->getParameter('smart_db_dumper.make_copy_to_project_root')) {
+            $connection = $this->container->get('doctrine.dbal.default_connection');
+            $connectionParams = $connection->getParams();
+
             if ($db->getFilename()) {
                 $path = $this->container->getParameter('kernel.project_dir').'/'.$db->getFilename(true);
             } else {
-                $path = $this->container->getParameter('kernel.project_dir').'/'.$this->container->get('doctrine.dbal.default_connection')->getDatabase().$db->getFilenameExtension();
+                $path = $this->container->getParameter('kernel.project_dir').'/'.$connectionParams['dbname'].$db->getFilenameExtension();
             }
 
             $fs = new Filesystem();

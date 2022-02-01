@@ -61,14 +61,15 @@ class DatabaseManager
         $this->platform = $this->em->getConnection()->getDatabasePlatform()->getName();
 
         $connection = $this->container->get('doctrine.dbal.default_connection');
+        $connectionParams = $connection->getParams();
 
         $paramsCommon = [
             'all_databases' => false,
-            'database' => $connection->getDatabase(),
-            'db_user' => $connection->getUsername(),
-            'db_password' => $connection->getPassword(),
-            'db_host' => $connection->getHost(),
-            'db_port' => $connection->getPort() ?: 3306,
+            'database' => $connectionParams['dbname'],
+            'db_user' => $connectionParams['user'],
+            'db_password' => $connectionParams['password'],
+            'db_host' => $connectionParams['host'],
+            'db_port' => $connectionParams['port'] ?: 3306,
             'ignore_tables' => [],
         ];
 
@@ -101,7 +102,7 @@ class DatabaseManager
 
         $this->db->dump();
 
-        if ($this->archive == 'gz') {
+        if ($this->archive === 'gz') {
             $file = $this->gzip($this->db->getPath());
 
             unlink($this->db->getPath());
