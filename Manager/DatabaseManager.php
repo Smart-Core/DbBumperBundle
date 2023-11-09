@@ -112,6 +112,16 @@ class DatabaseManager
             return $file;
         }
 
+        if ($this->archive === 'zip') {
+            $file = $this->zip($this->db->getPath());
+
+            unlink($this->db->getPath());
+
+            $this->db->setFileName($currentDbFilename);
+
+            return $file;
+        }
+
         $this->db->setFileName($currentDbFilename);
 
         return $this->db->getPath();
@@ -192,7 +202,7 @@ class DatabaseManager
         $ext = '.sql';
 
         if ($this->archive) {
-            $ext .= '.'.$this->archive;
+            $ext .= '.' . $this->archive;
         }
 
         return $ext;
@@ -233,5 +243,18 @@ class DatabaseManager
         gzclose($fp);
 
         return $gzfile;
+    }
+
+    protected function zip($filename)
+    {
+        $zip = new \ZipArchive();
+
+        $zip->open($filename . '.zip', \ZipArchive::CREATE);
+
+        $zip->addFile($filename, basename($filename));
+
+        $zip->close();
+
+        return $filename . '.zip';
     }
 }

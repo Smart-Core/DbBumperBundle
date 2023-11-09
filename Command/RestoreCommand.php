@@ -120,6 +120,10 @@ class RestoreCommand extends Command
             $dumpFile = $this->ungzip($dumpFile);
             $dbdumper->import($dumpFile);
             unlink($dumpFile);
+        } elseif ('.sql.zip' === substr($dumpFile, -8)) {
+            $dumpFile = $this->unzip($dumpFile);
+            $dbdumper->import($dumpFile);
+            unlink($dumpFile);
         } else {
             $dbdumper->import($dumpFile);
         }
@@ -148,6 +152,18 @@ class RestoreCommand extends Command
         // Files are done, close files
         fclose($out_file);
         gzclose($file);
+
+        return $out_file_name;
+    }
+
+    protected function unzip($filename)
+    {
+        $out_file_name = str_replace('.zip', '', $filename);
+
+        $zip = new \ZipArchive();
+
+        $zip->open($filename);
+        $zip->extractTo(dirname($filename));
 
         return $out_file_name;
     }

@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('filename')->defaultNull()->end()
                 ->booleanNode('make_copy_to_project_root')->defaultFalse()->end()
                 ->booleanNode('make_dump_before_restore')->defaultTrue()->end()
-                ->enumNode('archive')->values([null, 'none', 'gz'])->defaultValue('gz')->end() // @todo , 'tar', 'zip', '7z'
+                ->enumNode('archive')->values([null, 'none', 'gz', 'zip'])->defaultValue('gz')->end() // @todo , 'tar', 'zip', '7z'
                 ->integerNode('compression_ratio')->defaultValue(6)->min(0)->max(100)->end()
             ->end();
 
