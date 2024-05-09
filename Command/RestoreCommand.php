@@ -18,10 +18,7 @@ class RestoreCommand extends Command
 {
     use ContainerAwareTrait;
 
-    /**
-     * Configure the command.
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('smart:dbdumper:restore')
@@ -29,13 +26,7 @@ class RestoreCommand extends Command
             ->setDescription('Restore default backup.');
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dbdumper = $this->container->get('smart_db_dumper.manager');
 
@@ -135,7 +126,7 @@ class RestoreCommand extends Command
         return 0;
     }
 
-    protected function ungzip($file_name)
+    protected function ungzip($file_name): string
     {
         // Raising this value may increase performance
         $buffer_size = 4096; // read 4kb at a time
@@ -156,7 +147,7 @@ class RestoreCommand extends Command
         return $out_file_name;
     }
 
-    protected function unzip($filename)
+    protected function unzip($filename): string
     {
         $out_file_name = str_replace('.zip', '', $filename);
 
@@ -168,7 +159,7 @@ class RestoreCommand extends Command
         return $out_file_name;
     }
 
-    protected function executeCommand($cmd, array $args = [])
+    protected function executeCommand($cmd, array $args = []): int
     {
         $args['command'] = $cmd;
 
@@ -180,7 +171,7 @@ class RestoreCommand extends Command
         return $application->run($input, $output);
     }
 
-    protected function executeShellCommand($cmd, OutputInterface $output = null)
+    protected function executeShellCommand($cmd, OutputInterface $output = null): void
     {
         $process = Process::fromShellCommandline($cmd, null, null, null, 600);
         $process->run(function ($type, $buffer) use ($output) {

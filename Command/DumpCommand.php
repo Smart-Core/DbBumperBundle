@@ -13,10 +13,7 @@ class DumpCommand extends Command
 {
     use ContainerAwareTrait;
 
-    /**
-     * Configure the command.
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('smart:dbdumper:dump')
@@ -25,13 +22,7 @@ class DumpCommand extends Command
             ->setDescription('Dump backup of your database.');
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $start_time = microtime(true);
 

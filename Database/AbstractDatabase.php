@@ -41,7 +41,7 @@ abstract class AbstractDatabase implements DatabaseInterface
      *
      * @throws \RuntimeException
      */
-    protected function execute($command)
+    protected function execute($command): void
     {
         $process = Process::fromShellCommandline($command, null, null, null, $this->timeout);
         $process->run();
@@ -54,7 +54,7 @@ abstract class AbstractDatabase implements DatabaseInterface
     /**
      * Prepare path for dump file.
      */
-    protected function preparePath()
+    protected function preparePath(): void
     {
         $this->filesystem->mkdir($this->dataPath);
     }
@@ -64,7 +64,7 @@ abstract class AbstractDatabase implements DatabaseInterface
      *
      * @return $this
      */
-    public function setTimeout($timeout)
+    public function setTimeout($timeout): self
     {
         $this->timeout = $timeout;
 
